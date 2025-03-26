@@ -1,4 +1,4 @@
-gpu=False 
+gpu=True 
 import easyocr
 reader = easyocr.Reader(['ch_sim','en'],gpu=gpu) # this needs to run only once to load the model into memory
 
