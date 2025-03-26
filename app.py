@@ -204,6 +204,8 @@ def sanitize_file(file_path):
     file_name = f"{truncated_text}_{random_string}{ext}"
     return file_name
 def upload_file(video_path):
+  if os.path.exists("./upload"):
+    shutil.rmtree("./upload")   
   os.makedirs("./upload",exist_ok=True)
   new_path=sanitize_file(video_path)
   new_path=f"./upload/{new_path}"
@@ -243,7 +245,10 @@ def marge_video(gpu=True):
 def recover_audio(upload_path):
   output_path=f"./result/no_water_mark.mp4"
   audio_path="./upload/temp.wav"
-  save_path=upload_path.replace(".mp4","_no_watermark.mp4")
+  os.makedirs("./result/",exist_ok=True)
+  base_name=os.path.basename(upload_path)
+  save_path=f"./result/{base_name.replace('.mp4','_no_watermark.mp4')}"
+#   save_path=upload_path.replace(".mp4","_no_watermark.mp4")
   var=os.system(f"ffmpeg -i {upload_path} -q:a 0 -map a {audio_path} -y")
   if var==0:
     var2=os.system(f"ffmpeg -i {output_path} -i {audio_path} -c:v copy -map 0:v:0 -map 1:a:0 -shortest {save_path} -y")
@@ -254,7 +259,7 @@ def video_watermark_remover(video_path):
   global gpu
   upload_path=upload_file(video_path)
   extract_frames(upload_path, "./frames")
-  video_path = "/content/face.mp4"
+  batch_process(batch_size=100)
   vido_chunks(upload_path)
   marge_video(gpu=gpu)
   save_path=recover_audio(upload_path) 
