@@ -1,0 +1,4 @@
+git+https://github.com/JaidedAI/EasyOCR.git
+opencv-python-headless
+click
+gradio>=5.9.1
