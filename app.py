@@ -265,12 +265,13 @@ import gradio as gr
 import click
 
 def gradio_interface(video_file):
-    return video_watermark_remover(video_file)
+    vid_path=video_watermark_remover(video_file)
+    return vid_path,vid_path
 
 demo = gr.Interface(
     fn=gradio_interface,
     inputs=gr.File(label="Upload Video"),
-    outputs=gr.File(label="Processed Video"),
+    outputs=[gr.File(label="Download Video"),gr.Video(label="Play Video")],
     title="Video Watermark Remover",
     description="Upload a video, and this tool will remove watermarks using blurring techniques."
 )
