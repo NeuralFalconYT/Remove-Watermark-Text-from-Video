@@ -279,7 +279,7 @@ demo = gr.Interface(
     fn=gradio_interface,
     inputs=[
         gr.File(label="Upload Video"),
-        gr.Dropdown(choices=blur_types, label="Blur Type", value="median")  # Default to median
+        gr.Dropdown(choices=blur_types, label="Blur Type", value="strong_gaussian")  # Default to median
     ],
     outputs=[gr.File(label="Download Video"),gr.Video(label="Play Video")],
     title="Video Watermark Remover",
