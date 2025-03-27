@@ -85,14 +85,14 @@ def remove_watermark(image, blur_type="strong_gaussian"):
 
 
 
-def process_frame(frame_path, save_path):
+def process_frame(frame_path, save_path, blur_type):
     image = cv2.imread(frame_path)
     
     if image is None:
         print(f"Failed to load: {frame_path}")  # Debugging step
         return
     
-    no_watermark_image = remove_watermark(image, blur_type="median")
+    no_watermark_image = remove_watermark(image, blur_type=blur_type)
     
     output_file = os.path.join(save_path, os.path.basename(frame_path))
     success = cv2.imwrite(output_file, no_watermark_image)
@@ -100,7 +100,7 @@ def process_frame(frame_path, save_path):
     if not success:
         print(f"Failed to save: {output_file}")  # Debugging step
 
-def batch_process(batch_size=100):
+def batch_process(blur_type="median", batch_size=100):
     input_folder = "./frames"
     output_folder = "./clean"
     
@@ -111,7 +111,7 @@ def batch_process(batch_size=100):
     frame_paths = [os.path.join(input_folder, f) for f in os.listdir(input_folder) if f.endswith((".jpg", ".png"))]
     
     with ThreadPoolExecutor() as executor:
-        executor.map(process_frame, frame_paths, [output_folder] * len(frame_paths))
+        executor.map(process_frame, frame_paths, [output_folder] * len(frame_paths), [blur_type] * len(frame_paths))
 
     print(f"Processing complete! {len(frame_paths)} frames saved to {output_folder}")
 
@@ -255,11 +255,11 @@ def recover_audio(upload_path):
     if var2==0:
       return save_path
   return None 
-def video_watermark_remover(video_path):
+def video_watermark_remover(video_path, blur_type="median"):
   global gpu
   upload_path=upload_file(video_path)
   extract_frames(upload_path, "./frames")
-  batch_process(batch_size=100)
+  batch_process(blur_type=blur_type)
   vido_chunks(upload_path)
   marge_video(gpu=gpu)
   save_path=recover_audio(upload_path) 
@@ -269,13 +269,18 @@ def video_watermark_remover(video_path):
 import gradio as gr 
 import click
 
-def gradio_interface(video_file):
-    vid_path=video_watermark_remover(video_file)
+def gradio_interface(video_file, blur_type):
+    vid_path=video_watermark_remover(video_file, blur_type=blur_type)
     return vid_path,vid_path
+
+blur_types = ["strong_gaussian", "median"]  
 
 demo = gr.Interface(
     fn=gradio_interface,
-    inputs=gr.File(label="Upload Video"),
+    inputs=[
+        gr.File(label="Upload Video"),
+        gr.Dropdown(choices=blur_types, label="Blur Type", value="median")  # Default to median
+    ],
     outputs=[gr.File(label="Download Video"),gr.Video(label="Play Video")],
     title="Video Watermark Remover",
     description="Upload a video, and this tool will remove watermarks using blurring techniques."
