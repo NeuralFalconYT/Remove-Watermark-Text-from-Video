@@ -94,7 +94,7 @@ While this project currently uses **EasyOCR**, there are many **newer OCR models
 * **Faster processing speeds** on both CPU and GPU
 
 
-👉 If you want to experiment, you can **replace EasyOCR** with advanced OCR solutions (You can find latest ocr model on huggingface).
+👉 If you want to experiment, you can **replace EasyOCR** with advanced OCR solutions (You can find latest ocr models on huggingface).
 
 ---
 
