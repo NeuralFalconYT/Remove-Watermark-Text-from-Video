@@ -278,12 +278,16 @@ blur_types = ["strong_gaussian", "median"]
 demo = gr.Interface(
     fn=gradio_interface,
     inputs=[
-        gr.File(label="Upload Video"),
+        gr.Video(label="Upload Video"),
         gr.Dropdown(choices=blur_types, label="Blur Type", value="strong_gaussian")  # Default to median
     ],
     outputs=[gr.File(label="Download Video"),gr.Video(label="Play Video")],
-    title="Video Watermark Remover",
-    description="Upload a video, and this tool will remove watermarks using blurring techniques."
+    title="Remove Watermark Text from Video",
+    description="Upload a video, and this tool will blur texts",
+    examples=[
+        ["./examples/chinese.mp4"],
+        ["./examples/english.mp4"]
+    ]
 )
 
 # demo.launch()
